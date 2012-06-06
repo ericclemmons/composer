@@ -39,6 +39,7 @@ Script definition example:
 
     {
         "scripts": {
+            "post-update-cmd": "MyVendor\\MyClass::postInstall",
             "post-update-cmd": "MyVendor\\MyClass::postUpdate",
             "post-package-install": [
                 "MyVendor\\MyClass::postPackageInstall"
@@ -46,7 +47,7 @@ Script definition example:
         }
     }
 
-The event handler receives a `Composer\Script\Event` object as an argument,
+The event handler receives an object extending the classs `Composer\Script\Event` as an argument,
 which gives you access to the `Composer\Composer` instance through the
 `getComposer` method.
 
@@ -56,17 +57,24 @@ Using the previous example, here's an event listener example :
 
     namespace MyVendor;
 
-    use Composer\Script\Event;
+    use Composer\Script\CommandEvent;
+    use Composer\Script\PackageEvent;
 
     class MyClass
     {
-        public static function postUpdate(Event $event)
+        public static function postInstall(CommandEvent $event)
         {
             $composer = $event->getComposer();
             // do stuff
         }
 
-        public static function postPackageInstall(Event $event)
+        public static function postUpdate(CommandEvent $event)
+        {
+            $composer = $event->getComposer();
+            // do stuff
+        }
+
+        public static function postPackageInstall(PackageEvent $event)
         {
             $installedPackage = $event->getOperation()->getPackage();
             // do stuff
